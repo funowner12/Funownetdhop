@@ -40,10 +40,15 @@
       <label>Link</label>
       <input id="link" placeholder="https://..." />
 
+      <!-- NEW: Title field for textview17 -->
+      <label>Name</label>
+      <input id="title" placeholder="Text that will appear in textview17 (realtime)" />
+
       <div style="margin-top:12px" class="flex">
         <button id="saveSettingsBtn">Save Settings</button>
         <button id="resetSettingsBtn" style="background:#475569">Reset Fields</button>
       </div>
+      <div class="small" style="margin-top:8px">Title is saved to <code>data/data/title</code> so your Android/web client can read and show it.</div>
     </div>
 
     <!-- ADD USER -->
@@ -114,6 +119,7 @@
     // element refs
     const depositamountEl = document.getElementById('depositamount');
     const linkEl = document.getElementById('link');
+    const titleEl = document.getElementById('title');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
     const resetSettingsBtn = document.getElementById('resetSettingsBtn');
 
@@ -131,20 +137,24 @@
       if (!v) {
         depositamountEl.value = '';
         linkEl.value = '';
+        titleEl.value = '';
         return;
       }
       depositamountEl.value = v.depositamount || '';
       linkEl.value = v.link || '';
+      titleEl.value = v.title || '';
     }, err => {
       console.error('settings read error', err);
       depositamountEl.value = '';
       linkEl.value = '';
+      titleEl.value = '';
     });
 
     saveSettingsBtn.addEventListener('click', () => {
       const deposit = depositamountEl.value.trim();
       const link = linkEl.value.trim();
-      db.ref('data/data').update({ depositamount: deposit, link: link })
+      const title = titleEl.value.trim();
+      db.ref('data/data').update({ depositamount: deposit, link: link, title: title })
         .then(()=> alert('Settings saved'))
         .catch(e=> alert('Save failed: ' + e.message));
     });
@@ -152,6 +162,7 @@
     resetSettingsBtn.addEventListener('click', ()=> {
       depositamountEl.value = '';
       linkEl.value = '';
+      titleEl.value = '';
     });
 
     // ---------- USERS LIST (realtime) ----------
